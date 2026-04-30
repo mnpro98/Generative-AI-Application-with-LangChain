@@ -2,8 +2,17 @@
 
 GET http://127.0.0.1:8000/
 Accept: application/json
+
 ###
 
 GET http://127.0.0.1:8000/hello/User
 Accept: application/json
+
 ###
+
+POST http://127.0.0.1:8000/summarize
+Content-Type: application/json
+
+{
+  "text": "Smogon's tier system is used to rank Pokemon into several groups based on their perceived power and usage in competitive play. These tiers dictate which Pokemon can be used in the various metagames of competitive play. Each metagame encompasses different Pokemon, and therefore each one is unique in its style of play. The standards set by Smogon's tier system seek to balance competitive battling, ensuring no Pokemon is 'too powerful' or over-centralizes the metagame it appears in. This allows players the flexibility to show 'flair' in their team design rather than being restricted to using a particular Pokemon to win.A Pokemon's placement within a tier is by no means set in stone. As people continue to engage in competitive battles, new strategies and movesets arise that may have previously been overlooked. Through increased play testing, the popularity of some Pokemon may fluctuate. Furthermore, the community may find their strengths and weaknesses to be handled by the metagame differently. Examples of what would prompt a Pokemon's change in tier include the adoption of new competitive movesets or the reduction in use of its counters. With this in mind, the Smogon tier system is reviewed and updated regularly to reflect how specific Pokemon are utilized by our community."
+}
