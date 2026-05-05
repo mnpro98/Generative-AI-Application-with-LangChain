@@ -4,3 +4,5 @@ langchain_google_genai==4.2.2
 pydantic==2.13.3
 python-dotenv==1.2.2
 uvicorn[standard]
+langchain-classic
+langchain-community

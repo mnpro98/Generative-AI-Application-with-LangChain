@@ -15,6 +15,8 @@ app.add_middleware(
 class SummarizeRequest(BaseModel):
     text: str
 
+class FactCheckRequest(BaseModel):
+    text: str
 
 @app.get("/")
 async def root():
@@ -29,4 +31,10 @@ async def say_hello(name: str):
 @app.post("/summarize")
 async def summarize(request_data: SummarizeRequest):
     result = app_logic.summarize(request_data.text)
+    return {"message": result}
+
+
+@app.post("/fact-check")
+async def fact_check(request_data: FactCheckRequest):
+    result = app_logic.fact_check(request_data.text)
     return {"message": result}
