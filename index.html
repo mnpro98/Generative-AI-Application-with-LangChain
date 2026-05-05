@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Text Summarizer</title>
+    <title>Text Analyzer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -13,6 +13,36 @@
             background: #f5f5f5;
         }
         h1 { color: #333; }
+
+        .mode-toggle {
+            display: flex;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #ccc;
+            width: fit-content;
+        }
+        .mode-btn {
+            padding: 10px 28px;
+            font-size: 15px;
+            border: none;
+            background: #e0e0e0;
+            color: #555;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .mode-btn.active {
+            background: #4A90E2;
+            color: white;
+        }
+        .mode-btn:hover:not(.active) { background: #d0d0d0; }
+
+        .mode-description {
+            font-size: 13px;
+            color: #777;
+            margin-bottom: 12px;
+        }
+
         textarea {
             width: 100%;
             height: 200px;
@@ -23,7 +53,7 @@
             resize: vertical;
             box-sizing: border-box;
         }
-        button {
+        button#submitBtn {
             margin-top: 10px;
             padding: 10px 24px;
             background: #4A90E2;
@@ -33,8 +63,9 @@
             font-size: 16px;
             cursor: pointer;
         }
-        button:hover { background: #357ABD; }
-        button:disabled { background: #aaa; cursor: not-allowed; }
+        button#submitBtn:hover { background: #357ABD; }
+        button#submitBtn:disabled { background: #aaa; cursor: not-allowed; }
+
         #result {
             margin-top: 20px;
             padding: 16px;
@@ -43,41 +74,86 @@
             border: 1px solid #ddd;
             display: none;
         }
+        #resultText {
+            white-space: pre-wrap;
+            line-height: 1.6;
+        }
         #error { color: red; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
-    <h1>Text Summarizer ver 2.0</h1>
+    <h1>Text Analyzer</h1>
+
+    <div class="mode-toggle">
+        <button class="mode-btn active" id="btnSummarize" onclick="setMode('summarize')">Summarize</button>
+        <button class="mode-btn" id="btnFactCheck" onclick="setMode('fact-check')">Fact Check</button>
+    </div>
+
+    <p class="mode-description" id="modeDescription">Summarizes the provided text into a concise output.</p>
+
     <textarea id="inputText" placeholder="Paste your text here..."></textarea>
     <br>
-    <button id="submitBtn" onclick="summarize()">Summarize</button>
+    <button id="submitBtn" onclick="submit()">Summarize</button>
     <p id="error"></p>
     <div id="result">
-        <h3>Summary:</h3>
-        <p id="summaryText"></p>
+        <h3 id="resultLabel">Summary:</h3>
+        <p id="resultText"></p>
     </div>
 
     <script>
-        const API_URL = "https://generative-ai-application-with-langchain.onrender.com/summarize";
+        const BASE_URL = "https://generative-ai-application-with-langchain.onrender.com";
+        let currentMode = "summarize";
 
-        async function summarize() {
+        const modeConfig = {
+            "summarize": {
+                endpoint: BASE_URL + "/summarize",
+                btnLabel: "Summarize",
+                loadingLabel: "Summarizing...",
+                resultLabel: "Summary:",
+                description: "Summarizes the provided text into a concise output."
+            },
+            "fact-check": {
+                endpoint: BASE_URL + "/fact-check",
+                btnLabel: "Fact Check",
+                loadingLabel: "Fact checking...",
+                resultLabel: "Fact Check Report:",
+                description: "Verifies the claims in the provided text and returns a report with sources."
+            }
+        };
+
+        function setMode(mode) {
+            currentMode = mode;
+            const config = modeConfig[mode];
+
+            document.getElementById("btnSummarize").classList.toggle("active", mode === "summarize");
+            document.getElementById("btnFactCheck").classList.toggle("active", mode === "fact-check");
+            document.getElementById("submitBtn").textContent = config.btnLabel;
+            document.getElementById("resultLabel").textContent = config.resultLabel;
+            document.getElementById("modeDescription").textContent = config.description;
+
+            document.getElementById("result").style.display = "none";
+            document.getElementById("error").style.display = "none";
+        }
+
+        async function submit() {
             const text = document.getElementById("inputText").value.trim();
             const btn = document.getElementById("submitBtn");
             const error = document.getElementById("error");
             const result = document.getElementById("result");
+            const config = modeConfig[currentMode];
 
             if (!text) {
-                showError("Please enter some text to summarize.");
+                showError("Please enter some text to analyze.");
                 return;
             }
 
             btn.disabled = true;
-            btn.textContent = "Summarizing...";
+            btn.textContent = config.loadingLabel;
             error.style.display = "none";
             result.style.display = "none";
 
             try {
-                const response = await fetch(API_URL, {
+                const response = await fetch(config.endpoint, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ text })
@@ -86,13 +162,13 @@
                 if (!response.ok) throw new Error("Server error: " + response.status);
 
                 const data = await response.json();
-                document.getElementById("summaryText").textContent = data.message;
+                document.getElementById("resultText").textContent = data.message;
                 result.style.display = "block";
             } catch (err) {
-                showError("Failed to connect to Backend, please contact the administrator.");
+                showError("Failed to connect to the backend, please contact the administrator.");
             } finally {
                 btn.disabled = false;
-                btn.textContent = "Summarize";
+                btn.textContent = config.btnLabel;
             }
         }
 
