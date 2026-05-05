@@ -1,6 +1,6 @@
-# 🧠 Text Summarizer — LangChain + Gemini + FastAPI
+# 🧠 AI Text Analyzer — LangChain + Gemini + FastAPI + Tavily
 
-A generative AI web application that summarizes text using Google's Gemini model, built with LangChain and FastAPI.
+A generative AI web application that can summarize or fact-check a text using Google's Gemini model, built with LangChain and FastAPI.
 
 ## 🌐 Live Demo
 
@@ -99,6 +99,27 @@ Summarizes the provided text.
 ```
 
 ---
+
+### `POST /fact-check`
+
+Searches the web to fact check the provided text citing the source.
+
+**Request body:**
+```json
+{
+  "text": "Your fact here..."
+}
+```
+
+**Response:**
+```json
+{
+  "message": "Fact check report here."
+}
+```
+
+---
+
 
 ## ⚙️ Deployment
 
