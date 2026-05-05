@@ -47,7 +47,7 @@
     </style>
 </head>
 <body>
-    <h1>Text Summarizer</h1>
+    <h1>Text Summarizer ver 2.0</h1>
     <textarea id="inputText" placeholder="Paste your text here..."></textarea>
     <br>
     <button id="submitBtn" onclick="summarize()">Summarize</button>
@@ -58,7 +58,7 @@
     </div>
 
     <script>
-        const API_URL = "http://127.0.0.1:8000/summarize";
+        const API_URL = "https://generative-ai-application-with-langchain.onrender.com/summarize";
 
         async function summarize() {
             const text = document.getElementById("inputText").value.trim();
@@ -89,7 +89,7 @@
                 document.getElementById("summaryText").textContent = data.message;
                 result.style.display = "block";
             } catch (err) {
-                showError("Failed to connect to the API. Make sure your backend is running.");
+                showError("Failed to connect to Backend, please contact the administrator.");
             } finally {
                 btn.disabled = false;
                 btn.textContent = "Summarize";
